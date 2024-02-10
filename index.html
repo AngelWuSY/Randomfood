@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Random Selection</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        #options {
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h2>Food Choice!</h2>
+    <input type="text" id="newOption" placeholder="Enter a choice">
+    <button onclick="addOption()">Add</button>
+
+    <h2>Today's Choices</h2>
+    <div id="options"></div>
+
+    <button onclick="selectRandom()">Select! </button>
+    <h2 id="randomChoice"></h2>
+    
+    <button onclick="confirmDecision()" id="decideButton" style="display:none;">Decided!</button>
+    <div id="decisionMessage"></div>
+    <div id="recentDecisions"></div>
+    
+    
+
+    <script>
+        var options = [];
+
+        function addOption() {
+            var newOption = document.getElementById("newOption").value;
+            if (newOption) {
+                options.push(newOption);
+                document.getElementById("newOption").value = ''; // Clear input field
+                displayOptions();
+            }
+        }
+
+        function displayOptions() {
+            var optionsList = document.getElementById("options");
+            optionsList.innerHTML = ''; // Clear current list
+            options.forEach(function(option, index) {
+                optionsList.innerHTML += '<div>' + option + ' <button onclick="deleteOption(' + index + ')">Delete</button></div>';
+            });
+        }
+
+        function deleteOption(index) {
+            options.splice(index, 1);
+            displayOptions();
+        }
+
+        function selectRandom() {
+            if (options.length > 0) {
+                var randomIndex = Math.floor(Math.random() * options.length);
+                document.getElementById("randomChoice").innerText = "Random Selection: " + options[randomIndex];
+            }
+        }
+
+        var decisions = [];
+
+function selectRandom() {
+    if (options.length > 0) {
+        var randomIndex = Math.floor(Math.random() * options.length);
+        var selected = options[randomIndex];
+        document.getElementById("randomChoice").innerText = "Random Selection: " + selected;
+        document.getElementById("decideButton").style.display = 'block';
+    }
+}
+
+function confirmDecision() {
+    var choice = document.getElementById("randomChoice").innerText.split(": ")[1];
+    var today = new Date();
+    var decision = { date: today.toISOString().split('T')[0], choice: choice };
+    
+    // Check for diversity
+    if (decisions.length > 0 && decisions[decisions.length - 1].choice === choice) {
+        document.getElementById("decisionMessage").innerText = "Remember to have a diverse diet!";
+    } else {
+        document.getElementById("decisionMessage").innerText = "Congratulations! Today you eat " + choice;
+    }
+
+    decisions.push(decision);
+    displayDecisions();
+}
+
+function displayDecisions() {
+    var list = document.getElementById("recentDecisions");
+    list.innerHTML = '';
+    var maxDisplay = 5;
+    var displayedDecisions = decisions.slice(-maxDisplay);
+
+    displayedDecisions.forEach(function(decision) {
+        var decisionDate = new Date(decision.date);
+        var today = new Date();
+        var dateString = decision.date === today.toISOString().split('T')[0] ? "Today" : decisionDate.toDateString();
+        list.innerHTML += dateString + ": " + decision.choice + "<br>";
+    });
+}
+
+    </script>
+</body>
+</html>
